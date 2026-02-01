@@ -99,28 +99,65 @@ public class ChatBot {
     }
 
     private void executeAdd(String argument) {
-        String additionMessage = ("Nya-ice! I've added: " + argument);
-        if (argument.startsWith("todo ")) {
-            ToDo todo = new ToDo(argument.substring(5).trim());
-            taskList.addTask(todo);
-            System.out.println(additionMessage);
-
-        } else if (argument.startsWith("deadline ")) {
-            String[] parts = argument.substring(9).split(" /by ", 2);
-            Deadline deadline = new Deadline(parts[0].trim(), parts[1].trim());
-            taskList.addTask(deadline);
-            System.out.println(additionMessage);
-
-        } else if (argument.startsWith("event ")) {
-            String[] parts = argument.substring(6).split(" /from | /to ");
-            Event event = new Event(
-                    parts[0].trim(),
-                    parts[1].trim(),
-                    parts[2].trim()
-            );
-            taskList.addTask(event);
-            System.out.println(additionMessage);
+        try {
+            if (argument.startsWith("todo")) {
+                handleTodo(argument);
+            } else if (argument.startsWith("deadline")) {
+                handleDeadline(argument);
+            } else if (argument.startsWith("event")) {
+                handleEvent(argument);
+            } else {
+                System.out.println("Wait a meow-nute... You've got me feeling purr-plexed...");
+            }
+        } catch (Exception e) {
+            System.out.println("Something went cat-astrophically wrong: " + e.getMessage());
         }
+    }
+
+    private void handleTodo(String argument) {
+        String desc = argument.length() > 4 ? argument.substring(4).trim() : "";
+        if (desc.isEmpty()) {
+            System.out.println("Nyat today! Give me a description too please!");
+            return;
+        }
+        ToDo todo = new ToDo(desc);
+        taskList.addTask(todo);
+        System.out.println("Nya-ice! I've added: " + argument);
+    }
+
+    private void handleDeadline(String argument) {
+        String deadlineArgs = argument.length() > 8 ? argument.substring(8).trim() : "";
+        String[] parts = deadlineArgs.split(" /by ", 2);
+
+        String description = parts.length > 0 ? parts[0].trim() : "";
+        String by = parts.length > 1 ? parts[1].trim() : "";
+
+        if (description.isEmpty() || by.isEmpty()) {
+            System.out.println("Aren't you furrgetting something? Please provide description and a due date!");
+            return;
+        }
+
+        Deadline deadline = new Deadline(description, by);
+        taskList.addTask(deadline);
+        System.out.println("Nya-ice! I've added: " + argument);
+    }
+
+    private void handleEvent(String argument) {
+        String eventArgs = argument.length() > 5 ? argument.substring(5).trim() : "";
+        String[] parts = eventArgs.split(" /from | /to ");
+
+        String description = parts.length > 0 ? parts[0].trim() : "";
+        String start = parts.length > 1 ? parts[1].trim() : "";
+        String end = parts.length > 2 ? parts[2].trim() : "";
+
+        if (description.isEmpty() || start.isEmpty() || end.isEmpty()) {
+            System.out.println("Events need a description, start, and end time, meow...");
+            return;
+        }
+
+        Event event = new Event(description, start, end);
+        taskList.addTask(event);
+        System.out.println("Nya-ice! I've added: " + argument);
     }
 
     private void executeMark(int argument) {
