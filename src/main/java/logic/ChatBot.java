@@ -4,6 +4,10 @@ import parser.ParsedCommand;
 import task.Task;
 import task.TaskList;
 import java.util.Scanner;
+import task.ToDo;
+import task.Deadline;
+import task.Event;
+
 
 /**
  * Represents a Chatbot that manages tasks set by a user.
@@ -34,7 +38,7 @@ public class ChatBot {
      */
     public void run(){
         helloUser();
-
+        printInstructions();
         while (isRunning) {
             String userCommand = scanner.nextLine();
             executeCommand(userCommand);
@@ -95,8 +99,28 @@ public class ChatBot {
     }
 
     private void executeAdd(String argument) {
-        taskList.addTask(argument);
-        System.out.println("Nya-ice! I've added: " + argument);
+        String additionMessage = ("Nya-ice! I've added: " + argument);
+        if (argument.startsWith("todo ")) {
+            ToDo todo = new ToDo(argument.substring(5).trim());
+            taskList.addTask(todo);
+            System.out.println(additionMessage);
+
+        } else if (argument.startsWith("deadline ")) {
+            String[] parts = argument.substring(9).split(" /by ", 2);
+            Deadline deadline = new Deadline(parts[0].trim(), parts[1].trim());
+            taskList.addTask(deadline);
+            System.out.println(additionMessage);
+
+        } else if (argument.startsWith("event ")) {
+            String[] parts = argument.substring(6).split(" /from | /to ");
+            Event event = new Event(
+                    parts[0].trim(),
+                    parts[1].trim(),
+                    parts[2].trim()
+            );
+            taskList.addTask(event);
+            System.out.println(additionMessage);
+        }
     }
 
     private void executeMark(int argument) {
@@ -110,4 +134,21 @@ public class ChatBot {
         System.out.println("I was looking forward to a cat nap... but this task is not done yet:");
         System.out.println(task);
     }
+
+    /**
+     * Prints the list of available commands for the user.
+     * This message is shown once at the start of the chatbot session.
+     */
+    private void printInstructions() {
+        System.out.println("Here’s what CatBot can do for you:");
+        System.out.println("• todo <description>");
+        System.out.println("• deadline <description> /by <date>");
+        System.out.println("• event <description> /from <start> /to <end>");
+        System.out.println("• list");
+        System.out.println("• mark <task number>");
+        System.out.println("• unmark <task number>");
+        System.out.println("• bye");
+        System.out.println();
+    }
+
 }

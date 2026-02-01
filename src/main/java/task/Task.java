@@ -3,8 +3,8 @@ package task;
  * Represents a task provided by a user.
  * Stores the task description and allows access to it.
  */
-public class Task {
-    private String userTaskDescription;
+public abstract class Task {
+    private final String userTaskDescription;
     private boolean isDone;
 
     /**
@@ -14,6 +14,10 @@ public class Task {
      */
     public Task (String userTask){
         this.userTaskDescription = userTask;
+    }
+
+    public String getType() {
+        return null;
     }
 
     /**
@@ -32,7 +36,7 @@ public class Task {
      */
     @Override
     public String toString() {
-        return (isDone ? "[X] " : "[ ] ") + userTaskDescription;
+        return "[" + getType() + "][" + (isDone ? "X" : " ") + "] " + userTaskDescription;
     }
 
     /**
@@ -59,3 +63,4 @@ public class Task {
     }
 
 }
+

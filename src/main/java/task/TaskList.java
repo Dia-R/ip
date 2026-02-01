@@ -19,13 +19,12 @@ public class TaskList {
     /**
      * Adds a new task to the task list if there is available capacity.
      *
-     * @param taskDescription The description of the task to be added.
+     * @param task The task to be added.
      * @throws IllegalStateException if the task list is full.
      */
-    public void addTask(String taskDescription) {
+    public void addTask(Task task) {
         if (taskCount < MAX_TASKS) {
-            allTasks[taskCount] = new Task(taskDescription);
-            taskCount++;
+            allTasks[taskCount++] = task;
         } else {
             throw new IllegalStateException("The task list is full.");
         }
@@ -93,5 +92,7 @@ public class TaskList {
         return task;
     }
 
-
+    public int getTaskCount() {
+        return taskCount;
+    }
 }
