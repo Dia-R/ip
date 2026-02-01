@@ -26,11 +26,14 @@ public class CommandParser {
             return new ParsedCommand(CommandType.Bye, "");
         } else if (lowerCaseUserCommand.equals("list")) {
             return new ParsedCommand(CommandType.List, "");
-        } else if (lowerCaseUserCommand.startsWith("mark")){
-            String arg = lowerCaseUserCommand.substring(5).trim();
+        } else if (lowerCaseUserCommand.startsWith("mark")) {
+            String arg = lowerCaseUserCommand.length() > 4
+            ? lowerCaseUserCommand.substring(4).trim() : "";
             return new ParsedCommand(CommandType.Mark, arg);
         } else if (lowerCaseUserCommand.startsWith("unmark")) {
-            String arg = lowerCaseUserCommand.substring(7).trim();
+            String arg = lowerCaseUserCommand.length() > 6
+                    ? lowerCaseUserCommand.substring(6).trim()
+                    : "";
             return new ParsedCommand(CommandType.Unmark, arg);
         } else if (lowerCaseUserCommand.startsWith("delete")) {
             String arg = lowerCaseUserCommand.substring(6).trim();

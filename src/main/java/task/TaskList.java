@@ -52,8 +52,17 @@ public class TaskList {
      */
     public String[] getAllTasks() {
         String[] totalTasks = new String[taskCount];
+
         for (int i = 0; i < taskCount; i++) {
-            totalTasks[i] = (i + 1) + "." + allTasks[i].toString();
+            Task task = allTasks[i];
+
+            char typeLetter = switch (task.getType()) {
+                case Todo -> 'T';
+                case Deadline -> 'D';
+                case Event -> 'E';
+            };
+
+            totalTasks[i] = (i + 1) + ".[" + typeLetter + "]" + task.toString();
         }
 
         return totalTasks;
@@ -104,7 +113,7 @@ public class TaskList {
      */
     public Task deleteTask(int taskNumber) {
         if (taskNumber < 1 || taskNumber > taskCount) {
-            throw new IndexOutOfBoundsException("No such task to delete.");
+            throw new IndexOutOfBoundsException("No such task to delete, I'm afurr-aid...");
         }
 
         Task removedTask = allTasks[taskNumber - 1];

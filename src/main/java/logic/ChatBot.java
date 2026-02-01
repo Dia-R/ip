@@ -72,15 +72,16 @@ public class ChatBot {
             break;
 
         case Mark:
-            executeMark(Integer.parseInt(command.getArgument()));
+            executeMark(command.getArgument());
             break;
 
         case Unmark:
-            executeUnmark(Integer.parseInt(command.getArgument()));
+            executeUnmark(command.getArgument());
             break;
 
+
         case Delete:
-            executeDelete(command.getArgument());
+        executeDelete(command.getArgument());
             break;
 
         }
@@ -128,6 +129,7 @@ public class ChatBot {
         ToDo todo = new ToDo(desc);
         taskList.addTask(todo);
         System.out.println("Nya-ice! I've added: " + argument);
+        System.out.println(tunaMessage(taskList.getTaskCount()));
     }
 
     private void handleDeadline(String argument) {
@@ -145,6 +147,7 @@ public class ChatBot {
         Deadline deadline = new Deadline(description, by);
         taskList.addTask(deadline);
         System.out.println("Nya-ice! I've added: " + argument);
+        System.out.println(tunaMessage(taskList.getTaskCount()));
     }
 
     private void handleEvent(String argument) {
@@ -163,31 +166,57 @@ public class ChatBot {
         Event event = new Event(description, start, end);
         taskList.addTask(event);
         System.out.println("Nya-ice! I've added: " + argument);
+        System.out.println(tunaMessage(taskList.getTaskCount()));
     }
 
-    private void executeMark(int argument) {
-        Task task = taskList.markTask(argument);
-        System.out.println("You're pawsitively efficient! This task has been marked as done:");
-        System.out.println(task);
+    private void executeMark(String argument) {
+        if (argument == null || argument.trim().isEmpty()) {
+            System.out.println("Meow? Which task do you want to mark?");
+            return;
+        }
+
+        try {
+            int taskNumber = Integer.parseInt(argument.trim());
+            Task task = taskList.markTask(taskNumber);
+            System.out.println("You're pawsitively efficient! This task has been marked as done:");
+            System.out.println(task);
+        } catch (NumberFormatException e) {
+            System.out.println("That doesn’t look like a number, furriend!");
+        } catch (IndexOutOfBoundsException e) {
+            System.out.println("No such task to mark, meow!");
+        }
     }
 
-    private void executeUnmark(int argument) {
-        Task task = taskList.unmarkTask(argument);
-        System.out.println("I was looking forward to a cat nap... but this task is not done yet:");
-        System.out.println(task);
+    private void executeUnmark(String argument) {
+        if (argument == null || argument.trim().isEmpty()) {
+            System.out.println("Meow? Which task do you want to unmark?");
+            return;
+        }
+
+        try {
+            int taskNumber = Integer.parseInt(argument.trim());
+            Task task = taskList.unmarkTask(taskNumber);
+            System.out.println("I was looking forward to a cat nap... but this task is not done yet:");
+            System.out.println(task);
+        } catch (NumberFormatException e) {
+            System.out.println("That doesn’t look like a number, furriend!");
+        } catch (IndexOutOfBoundsException e) {
+            System.out.println("No such task to unmark, meow!");
+        }
     }
 
     private void executeDelete(String argument) {
         if (argument == null || argument.trim().isEmpty()) {
-            System.out.println("Oops! You didn’t tell me which task to delete, meow!");
+            System.out.println("You didn’t tell ME-ow which task to delete!");
             return;
         }
 
         try {
             int taskNumber = Integer.parseInt(argument.trim());
             Task removedTask = taskList.deleteTask(taskNumber);
-            System.out.println("Noted. I've removed this task:");
+            System.out.println("A smart kitty has removed this task:");
             System.out.println(removedTask);
+            System.out.println(tunaMessage(taskList.getTaskCount()));
         } catch (NumberFormatException e) {
             System.out.println("That’s not a valid task number, furriend!");
         } catch (IndexOutOfBoundsException e) {
@@ -208,5 +237,11 @@ public class ChatBot {
         System.out.println("• bye");
         System.out.println();
     }
+
+    private String tunaMessage(int taskCount) {
+        return "If I had a can of tuna for every task you have to do, I'd have... "
+                + taskCount + ". Yum!";
+    }
+
 
 }

@@ -28,7 +28,9 @@ public class Event extends Task {
      * @return the string "Event".
      */
     @Override
-    public String getType() { return "Event"; }
+    public TaskType getType() {
+        return TaskType.Event;
+    }
 
     /**
      * Returns a string representation of the event, including its description,
@@ -40,4 +42,5 @@ public class Event extends Task {
     public String toString() {
         return super.toString() + " (from: " + start + " to: " + end + ")";
     }
+
 }

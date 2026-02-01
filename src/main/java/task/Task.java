@@ -16,9 +16,12 @@ public abstract class Task {
         this.userTaskDescription = userTask;
     }
 
-    public String getType() {
-        return null;
-    }
+    /**
+     * Returns the type of this task.
+     *
+     * @return the TaskType enum of this task
+     */
+    public abstract TaskType getType();
 
     /**
      * Returns the description of the user's task.
@@ -36,8 +39,9 @@ public abstract class Task {
      */
     @Override
     public String toString() {
-        return "[" + getType() + "][" + (isDone ? "X" : " ") + "] " + userTaskDescription;
+        return (isDone ? "[X] " : "[ ] ") + userTaskDescription;
     }
+
 
     /**
      * Marks this task as completed.

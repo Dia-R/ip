@@ -24,7 +24,9 @@ public class Deadline extends Task {
      * @return a string representing the task type.
      */
     @Override
-    public String getType() { return "Deadline"; }
+    public TaskType getType() {
+        return TaskType.Deadline;
+    }
 
     /**
      * Returns a string representation of the deadline task, including
@@ -36,5 +38,6 @@ public class Deadline extends Task {
     public String toString() {
         return super.toString() + " (by: " + deadline + ")";
     }
+
 }
 
