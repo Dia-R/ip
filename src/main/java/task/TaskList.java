@@ -4,6 +4,7 @@ package task;
  * Stores up to 100 Task objects and tracks the number of tasks currently stored.
  */
 public class TaskList {
+    private static final int MAX_TASKS = 100;
     private Task[] allTasks;
     private int taskCount;
 
@@ -11,7 +12,7 @@ public class TaskList {
      * Creates an empty TaskList with a maximum capacity of 100 tasks.
      */
     public TaskList() {
-        this.allTasks = new Task[100];
+        this.allTasks = new Task[MAX_TASKS];
         this.taskCount = 0;
     }
 
@@ -19,9 +20,10 @@ public class TaskList {
      * Adds a new task to the task list if there is available capacity.
      *
      * @param taskDescription The description of the task to be added.
+     * @throws IllegalStateException if the task list is full.
      */
     public void addTask(String taskDescription) {
-        if (taskCount < 100) {
+        if (taskCount < MAX_TASKS) {
             allTasks[taskCount] = new Task(taskDescription);
             taskCount++;
         } else {
@@ -42,6 +44,13 @@ public class TaskList {
         return allTasks[index];
     }
 
+    /**
+     * Returns all tasks in the list as an array of strings,
+     * with each task numbered starting from 1.
+     *
+     * @return an array of strings representing all tasks with numbering
+     *
+     */
     public String[] getAllTasks() {
         String[] totalTasks = new String[taskCount];
         for (int i = 0; i < taskCount; i++) {
@@ -51,7 +60,38 @@ public class TaskList {
         return totalTasks;
     }
 
+    /**
+     * Checks whether the task list is empty.
+     *
+     * @return true if there are no tasks in the list, false otherwise
+     */
     public boolean isEmpty() {
         return taskCount == 0;
     }
+
+    /**
+     * Marks task as done.
+     *
+     * @param taskNumber 1-based task index as seen by the user.
+     * @return task
+     */
+    public Task markTask(int taskNumber) {
+        Task task = getTask(taskNumber - 1);
+        task.markDone();
+        return task;
+    }
+
+    /**
+     * Marks task as not done.
+     *
+     * @param taskNumber 1-based task index as seen by the user.
+     * @return task
+     */
+    public Task unmarkTask(int taskNumber) {
+        Task task = getTask(taskNumber - 1);
+        task.unmarkDone();
+        return task;
+    }
+
+
 }

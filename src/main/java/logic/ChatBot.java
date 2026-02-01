@@ -1,6 +1,7 @@
 package logic;
 import parser.CommandParser;
 import parser.ParsedCommand;
+import task.Task;
 import task.TaskList;
 import java.util.Scanner;
 
@@ -63,7 +64,15 @@ public class ChatBot {
             break;
 
         case Add:
-            executeAdd(userCommand);
+            executeAdd(command.getArgument());
+            break;
+
+        case Mark:
+            executeMark(Integer.parseInt(command.getArgument()));
+            break;
+
+        case Unmark:
+            executeUnmark(Integer.parseInt(command.getArgument()));
             break;
         }
     }
@@ -85,8 +94,20 @@ public class ChatBot {
         }
     }
 
-    private void executeAdd(String userCommand) {
-        taskList.addTask(userCommand);
-        System.out.println("Nya-ice! I've added: " + userCommand);
+    private void executeAdd(String argument) {
+        taskList.addTask(argument);
+        System.out.println("Nya-ice! I've added: " + argument);
+    }
+
+    private void executeMark(int argument) {
+        Task task = taskList.markTask(argument);
+        System.out.println("You're pawsitively efficient! This task has been marked as done:");
+        System.out.println(task);
+    }
+
+    private void executeUnmark(int argument) {
+        Task task = taskList.unmarkTask(argument);
+        System.out.println("I was looking forward to a cat nap... but this task is not done yet:");
+        System.out.println(task);
     }
 }
