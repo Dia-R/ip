@@ -95,4 +95,25 @@ public class TaskList {
     public int getTaskCount() {
         return taskCount;
     }
+
+    /**
+     * Deletes a task from the task list.
+     *
+     * @param taskNumber 1-based index of the task to delete.
+     * @return the task that was removed.
+     */
+    public Task deleteTask(int taskNumber) {
+        if (taskNumber < 1 || taskNumber > taskCount) {
+            throw new IndexOutOfBoundsException("No such task to delete.");
+        }
+
+        Task removedTask = allTasks[taskNumber - 1];
+        for (int i = taskNumber - 1; i < taskCount - 1; i++) {
+            allTasks[i] = allTasks[i + 1];
+        }
+        allTasks[taskCount - 1] = null;
+        taskCount--;
+
+        return removedTask;
+    }
 }

@@ -9,7 +9,7 @@ public class CommandParser {
      * Represents the supported types of user commands.
      */
     public enum CommandType {
-        Bye, List, Add, Mark, Unmark
+        Bye, List, Add, Mark, Unmark, Delete
     }
 
     /**
@@ -32,6 +32,9 @@ public class CommandParser {
         } else if (lowerCaseUserCommand.startsWith("unmark")) {
             String arg = lowerCaseUserCommand.substring(7).trim();
             return new ParsedCommand(CommandType.Unmark, arg);
+        } else if (lowerCaseUserCommand.startsWith("delete")) {
+            String arg = lowerCaseUserCommand.substring(6).trim();
+            return new ParsedCommand(CommandType.Delete, arg);
         } else {
             return new ParsedCommand(CommandType.Add, lowerCaseUserCommand);
         }

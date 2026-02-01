@@ -78,6 +78,11 @@ public class ChatBot {
         case Unmark:
             executeUnmark(Integer.parseInt(command.getArgument()));
             break;
+
+        case Delete:
+            executeDelete(command.getArgument());
+            break;
+
         }
     }
 
@@ -172,10 +177,26 @@ public class ChatBot {
         System.out.println(task);
     }
 
-    /**
-     * Prints the list of available commands for the user.
-     * This message is shown once at the start of the chatbot session.
-     */
+    private void executeDelete(String argument) {
+        if (argument == null || argument.trim().isEmpty()) {
+            System.out.println("Oops! You didn’t tell me which task to delete, meow!");
+            return;
+        }
+
+        try {
+            int taskNumber = Integer.parseInt(argument.trim());
+            Task removedTask = taskList.deleteTask(taskNumber);
+            System.out.println("Noted. I've removed this task:");
+            System.out.println(removedTask);
+        } catch (NumberFormatException e) {
+            System.out.println("That’s not a valid task number, furriend!");
+        } catch (IndexOutOfBoundsException e) {
+            System.out.println("No task with that number, meow!");
+        } catch (Exception e) {
+            System.out.println("Something went cat-astrophically wrong: " + e.getMessage());
+        }
+    }
+
     private void printInstructions() {
         System.out.println("Here’s what CatBot can do for you:");
         System.out.println("• todo <description>");
