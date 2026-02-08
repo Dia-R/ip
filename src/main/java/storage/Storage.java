@@ -8,11 +8,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
 /**
  * Handles loading and saving tasks to a file on disk.
- *
+ * Supports date and time parsing for Deadline and Event tasks.
  */
 public class Storage {
     private final String filePath;
@@ -34,7 +35,7 @@ public class Storage {
      * @return the number of tasks loaded.
      * @throws StorageException if there is an error reading the file.
      */
-    public int load(Task[] tasks) throws StorageException, FileNotFoundException {
+    public int load(Task[] tasks) throws StorageException {
         File file = new File(filePath);
 
         File parentDir = file.getParentFile();
@@ -47,7 +48,7 @@ public class Storage {
         if (!file.exists()) {
             try {
                 if (!file.createNewFile()) {
-                    throw new StorageException("You’ve got to be kitten me. I can't create the data file");
+                    throw new StorageException("You've got to be kitten me. I can't create the data file");
                 }
             } catch (IOException e) {
                 throw new StorageException("Hissterical! Look at what's happened: " + e.getMessage());
@@ -60,10 +61,12 @@ public class Storage {
             while (scanner.hasNextLine() && taskCount < tasks.length) {
                 String line = scanner.nextLine();
                 Task task = parseTask(line);
-                if (task !=null) {
+                if (task != null) {
                     tasks[taskCount++] = task;
                 }
             }
+        } catch (FileNotFoundException e) {
+            throw new StorageException("Can't find the file, meow: " + e.getMessage());
         }
 
         return taskCount;
@@ -89,32 +92,35 @@ public class Storage {
         StringBuilder sb = new StringBuilder();
 
         switch (task.getType()) {
-        case Todo:
-        sb.append("T | ");
-        sb.append(task.isDone() ? "1" : "0");
-        sb.append(" | ");
-        sb.append(task.getUserTask());
-        break;
+            case Todo:
+                sb.append("T | ");
+                sb.append(task.isDone() ? "1" : "0");
+                sb.append(" | ");
+                sb.append(task.getUserTask());
+                break;
 
-        case Deadline:
-        Deadline deadline = (Deadline) task;
-        sb.append("D | ");
-        sb.append(deadline.isDone() ? "1" : "0");
-        sb.append(" | ");
-        sb.append(deadline.getUserTask());
-        sb.append(" | ");
-        sb.append(parseDeadline(deadline));
-        break;
+            case Deadline:
+                Deadline deadline = (Deadline) task;
+                sb.append("D | ");
+                sb.append(deadline.isDone() ? "1" : "0");
+                sb.append(" | ");
+                sb.append(deadline.getUserTask());
+                sb.append(" | ");
+                sb.append(deadline.getStorageDeadline());
+                break;
 
-        case Event:
-        Event event = (Event) task;
-        sb.append("E | ");
-        sb.append(event.isDone() ? "1" : "0");
-        sb.append(" | ");
-        sb.append(event.getUserTask());
-        sb.append(" | ");
-        sb.append(parseEvent(event));
-        break;}
+            case Event:
+                Event event = (Event) task;
+                sb.append("E | ");
+                sb.append(event.isDone() ? "1" : "0");
+                sb.append(" | ");
+                sb.append(event.getUserTask());
+                sb.append(" | ");
+                sb.append(event.getStorageStart());
+                sb.append(" | ");
+                sb.append(event.getStorageEnd());
+                break;
+        }
 
         return sb.toString();
     }
@@ -178,25 +184,29 @@ public class Storage {
             warn("Skipping corrupted deadline", line);
             return null;
         }
-        String deadline = parts[3].trim();
-        return new Deadline(description, deadline);
+        try {
+            String deadlineStr = parts[3].trim();
+            return Deadline.createFromString(description, deadlineStr);
+        } catch (DateTimeParseException e) {
+            warn("Invalid date format in deadline (" + e.getMessage() + ")", line);
+            return null;
+        }
     }
 
     private Task buildEvent(String description, String[] parts, String line) {
-        if (parts.length < 4) {
+        if (parts.length < 5) {
             warn("Skipping corrupted event", line);
             return null;
         }
 
-        String[] times = parts[3].trim().split(" to ");
-        if (times.length != 2) {
-            warn("Skipping corrupted event", line);
+        try {
+            String startStr = parts[3].trim();
+            String endStr = parts[4].trim();
+            return Event.createFromString(description, startStr, endStr);
+        } catch (DateTimeParseException e) {
+            warn("Invalid date format in event (" + e.getMessage() + ")", line);
             return null;
         }
-
-        String start = times[0].trim();
-        String end = times[1].trim();
-        return new Event(description, start, end);
     }
 
     private void markDoneIfNeeded(Task task, boolean isDone) {
@@ -207,24 +217,5 @@ public class Storage {
 
     private void warn(String message, String line) {
         System.out.println("Warning: " + message + ": " + line);
-    }
-
-    private String parseEvent(Event event) {
-        String str = event.toString();
-        int fromIndex = str.indexOf("(from: ");
-        if (fromIndex != -1) {
-            String timePart = str.substring(fromIndex + 7, str.length() - 1);
-            return timePart.replace(" to: ", " to ");
-        }
-        return "";
-    }
-
-    private String parseDeadline(Deadline deadline) {
-        String str = deadline.toString();
-        int byIndex = str.indexOf("(by: ");
-        if (byIndex != -1) {
-            return str.substring(byIndex + 5, str.length() - 1);
-        }
-        return "";
     }
 }

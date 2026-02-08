@@ -22,21 +22,21 @@ public class CommandParser {
     public static ParsedCommand parse(String userCommand) {
         String lowerCaseUserCommand = userCommand.trim().toLowerCase();
 
-        if (lowerCaseUserCommand.equals("bye")) {
+        if (lowerCaseUserCommand.startsWith("bye")) {
             return new ParsedCommand(CommandType.Bye, "");
-        } else if (lowerCaseUserCommand.equals("list")) {
+        } else if (lowerCaseUserCommand.startsWith("list")) {
             return new ParsedCommand(CommandType.List, "");
-        } else if (lowerCaseUserCommand.startsWith("mark")) {
-            String arg = lowerCaseUserCommand.length() > 4
-            ? lowerCaseUserCommand.substring(4).trim() : "";
+        } else if (lowerCaseUserCommand.startsWith("mark ")) {  // Note the space
+            String arg = lowerCaseUserCommand.length() > 5
+                    ? lowerCaseUserCommand.substring(5).trim() : "";
             return new ParsedCommand(CommandType.Mark, arg);
-        } else if (lowerCaseUserCommand.startsWith("unmark")) {
-            String arg = lowerCaseUserCommand.length() > 6
-                    ? lowerCaseUserCommand.substring(6).trim()
-                    : "";
+        } else if (lowerCaseUserCommand.startsWith("unmark ")) {
+            String arg = lowerCaseUserCommand.length() > 7
+                    ? lowerCaseUserCommand.substring(7).trim() : "";
             return new ParsedCommand(CommandType.Unmark, arg);
-        } else if (lowerCaseUserCommand.startsWith("delete")) {
-            String arg = lowerCaseUserCommand.substring(6).trim();
+        } else if (lowerCaseUserCommand.startsWith("delete ")) {
+            String arg = lowerCaseUserCommand.length() > 7
+                    ? lowerCaseUserCommand.substring(7).trim() : "";
             return new ParsedCommand(CommandType.Delete, arg);
         } else {
             return new ParsedCommand(CommandType.Add, lowerCaseUserCommand);

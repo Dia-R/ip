@@ -6,13 +6,16 @@ import storage.Storage;
 import storage.StorageException;
 import task.Task;
 import task.TaskList;
-
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 import task.ToDo;
 import task.Deadline;
 import task.Event;
 import java.io.File;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 
 /**
@@ -50,7 +53,7 @@ public class ChatBot {
             for (int i = 0; i < count; i++) {
                 taskList.addTask(tempTasks[i]);
             }
-        } catch (FileNotFoundException | StorageException e) {
+        } catch (StorageException e) {
             throw new RuntimeException(e);
         }
     }
@@ -177,11 +180,12 @@ public class ChatBot {
         String by = parts.length > 1 ? parts[1].trim() : "";
 
         if (description.isEmpty() || by.isEmpty()) {
-            System.out.println("Aren't you furrgetting something? Please provide description and a due date!");
+            System.out.println("Aren't you furrgetting something? Please provide description and a due date in the correct format!");
+            System.out.println("Example: deadline return book /by 2024-12-02 1800");
             return;
         }
 
-        Deadline deadline = new Deadline(description, by);
+        Deadline deadline = Deadline.createFromString(description, by);
         taskList.addTask(deadline);
         saveTasks();
         System.out.println("Nya-ice! I've added: " + argument);
@@ -190,22 +194,38 @@ public class ChatBot {
 
     private void handleEvent(String argument) {
         String eventArgs = argument.length() > 5 ? argument.substring(5).trim() : "";
-        String[] parts = eventArgs.split(" /from | /to ");
 
-        String description = parts.length > 0 ? parts[0].trim() : "";
-        String start = parts.length > 1 ? parts[1].trim() : "";
-        String end = parts.length > 2 ? parts[2].trim() : "";
+        int fromIndex = eventArgs.indexOf(" /from ");
+        if (fromIndex == -1) {
+            return;
+        }
+
+        String description = eventArgs.substring(0, fromIndex).trim();
+        String timeString = eventArgs.substring(fromIndex + 7); // Skip " /from "
+
+        int toIndex = timeString.indexOf(" /to ");
+        if (toIndex == -1) {
+            return;
+        }
+
+        String start = timeString.substring(0, toIndex).trim();
+        String end = timeString.substring(toIndex + 5).trim(); // Skip " /to "
 
         if (description.isEmpty() || start.isEmpty() || end.isEmpty()) {
             System.out.println("Events need a description, start, and end time, meow...");
             return;
         }
 
-        Event event = new Event(description, start, end);
-        taskList.addTask(event);
-        saveTasks();
-        System.out.println("Nya-ice! I've added: " + argument);
-        System.out.println(tunaMessage(taskList.getTaskCount()));
+        try {
+            Event event = Event.createFromString(description, start, end);
+            taskList.addTask(event);
+            saveTasks();
+            System.out.println("Nya-ice! I've added: " + event);
+            System.out.println(tunaMessage(taskList.getTaskCount()));
+        } catch (DateTimeParseException e) {
+            System.out.println("Meow-ch! That date format doesn't look right!");
+            System.out.println("Please use: yyyy-MM-dd HHmm (e.g., 2024-08-06 1400)");
+        }
     }
 
     private void executeMark(String argument) {
@@ -284,6 +304,4 @@ public class ChatBot {
         return "If I had a can of tuna for every task you have to do, I'd have... "
                 + taskCount + ". Yum!";
     }
-
-
 }

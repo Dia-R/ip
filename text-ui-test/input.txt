@@ -1,7 +1,12 @@
-todo borrow book
-deadline return book /by Sunday
-event project meeting /from Monday /to Tuesday
+todo buy groceries
+todo clean room
+deadline submit report /by 2024-12-15 2359
+deadline renew passport /by 2024-12-20 1700
+event doctor appointment /from 2024-12-15 0900 /to 2024-12-15 1000
+event lunch with friends /from 2024-12-15 1200 /to 2024-12-15 1400
 list
-mark 2
-unmark 2
+mark 1
+mark 3
+delete 2
+list
 bye
