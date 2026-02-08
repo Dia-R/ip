@@ -1,0 +1,15 @@
+D | 0 | pay electricity bill | 2024-12-31 1200
+E | 1 | dentist appointment | 2024-12-18 1000 | 2024-12-18 1100
+E | 0 | christmas dinner | 2024-12-25 1800 | 2024-12-25 2100
+E | 0 | project workshop | 2025-01-08 0900 | 2025-01-08 1700
+T | 0 | buy cat food
+T | 0 | water the plants
+T | 0 | call mom
+D | 0 | return library book | 2024-12-15 1700
+D | 0 | submit cs2103t assignment | 2024-12-20 2359
+D | 0 | pay electricity bill | 2024-12-31 1200
+D | 0 | prepare presentation | 2025-01-05 0900
+E | 0 | team meeting | 2024-12-10 1400 | 2024-12-10 1600
+E | 0 | dentist appointment | 2024-12-18 1000 | 2024-12-18 1100
+E | 0 | christmas dinner | 2024-12-25 1800 | 2024-12-25 2100
+E | 0 | project workshop | 2025-01-08 0900 | 2025-01-08 1700

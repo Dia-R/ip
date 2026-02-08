@@ -1,0 +1,3 @@
+**What worked well:** Claude excelled at generating boilerplate code, creating proper Java documentation, suggesting robust error handling patterns, and providing multiple test cases. The step-by-step Git commands and refactoring guides were particularly helpful. 
+
+**What didn't work as well:** Initial implementations sometimes had subtle bugs (like the event storage formatting issues) that required manual inspection to fix. Overall, I estimate around 60-70% time savings compared to doing it completely manually, especially for coding sections that are repetitive like the Ui Class.
