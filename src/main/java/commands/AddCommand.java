@@ -49,6 +49,9 @@ public class AddCommand extends Command {
         }
     }
 
+    /**
+     * Parses and adds a ToDo task.
+     */
     private void handleTodo(TaskList tasks, Ui ui, Storage storage) {
         String desc = taskString.length() > 4 ? taskString.substring(4).trim() : "";
         if (desc.isEmpty()) {
@@ -61,6 +64,9 @@ public class AddCommand extends Command {
         ui.showTaskAdded(todo, tasks.getTaskCount());
     }
 
+    /**
+     * Parses and adds a Deadline task.
+     */
     private void handleDeadline(TaskList tasks, Ui ui, Storage storage) {
         String deadlineArgs = taskString.length() > 8 ? taskString.substring(8).trim() : "";
         String[] parts = deadlineArgs.split(" /by ", 2);
@@ -83,6 +89,9 @@ public class AddCommand extends Command {
         }
     }
 
+    /**
+     * Parses and adds an Event task.
+     */
     private void handleEvent(TaskList tasks, Ui ui, Storage storage) {
         String eventArgs = taskString.length() > 5 ? taskString.substring(5).trim() : "";
 
@@ -119,6 +128,9 @@ public class AddCommand extends Command {
         }
     }
 
+    /**
+     * Saves the current task list to persistent storage.
+     */
     private void saveToStorage(TaskList tasks, Storage storage, Ui ui) {
         try {
             Task[] taskArray = new Task[tasks.getTaskCount()];

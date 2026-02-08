@@ -26,4 +26,4 @@ text-ui-test/EXPECTED-UNIX.TXT
 tasks/
 
 #Jar Files
-.jar
+*.jar

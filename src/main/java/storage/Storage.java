@@ -12,8 +12,14 @@ import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
 /**
- * Handles loading and saving tasks to a file on disk.
- * Supports date and time parsing for Deadline and Event tasks.
+ * Handles persistence of tasks by reading from and writing to a data file.
+ *
+ * The storage format uses pipe-delimited fields:
+ * T | isDone | description
+ * D | isDone | description | deadline
+ * E | isDone | description | start | end
+ *
+ * Invalid or corrupted lines are skipped with a warning.
  */
 public class Storage {
     private final String filePath;
@@ -21,19 +27,20 @@ public class Storage {
     /**
      * Creates a Storage object with the specified file path.
      *
-     * @param filePath relative path to the data file
+     * @param filePath Relative path to the data file
      */
     public Storage(String filePath) {
         this.filePath = filePath;
     }
 
     /**
-     * Loads tasks from the data file into the task list.
-     * Creates the file and necessary directories if they don't exist.
+     * Loads tasks from disk into the given array.
+     * Ensures parent directories exist and creates the data file if missing.
+     * Any invalid lines are skipped.
      *
-     * @param tasks array to hold tasks.
-     * @return the number of tasks loaded.
-     * @throws StorageException if there is an error reading the file.
+     * @param tasks Array to hold loaded tasks.
+     * @return Number of tasks loaded into the array.
+     * @throws StorageException If directory or file creation fails, or file cannot be read.
      */
     public int load(Task[] tasks) throws StorageException {
         File file = new File(filePath);
@@ -88,43 +95,54 @@ public class Storage {
         }
     }
 
+    /**
+     * Converts a {@code Task} into the storage file line format.
+     *
+     * @param task Task to format.
+     * @return A single-line representation of the task suitable for saving.
+     */
     private String formatTask(Task task) {
         StringBuilder sb = new StringBuilder();
 
         switch (task.getType()) {
-            case Todo:
-                sb.append("T | ");
-                sb.append(task.isDone() ? "1" : "0");
-                sb.append(" | ");
-                sb.append(task.getUserTask());
-                break;
+        case Todo:
+            sb.append("T | ");
+            sb.append(task.isDone() ? "1" : "0");
+            sb.append(" | ");
+            sb.append(task.getUserTask());
+            break;
 
-            case Deadline:
-                Deadline deadline = (Deadline) task;
-                sb.append("D | ");
-                sb.append(deadline.isDone() ? "1" : "0");
-                sb.append(" | ");
-                sb.append(deadline.getUserTask());
-                sb.append(" | ");
-                sb.append(deadline.getStorageDeadline());
-                break;
+        case Deadline:
+            Deadline deadline = (Deadline) task;
+            sb.append("D | ");
+            sb.append(deadline.isDone() ? "1" : "0");
+            sb.append(" | ");
+            sb.append(deadline.getUserTask());
+            sb.append(" | ");
+            sb.append(deadline.getStorageDeadline());
+            break;
 
-            case Event:
-                Event event = (Event) task;
-                sb.append("E | ");
-                sb.append(event.isDone() ? "1" : "0");
-                sb.append(" | ");
-                sb.append(event.getUserTask());
-                sb.append(" | ");
-                sb.append(event.getStorageStart());
-                sb.append(" | ");
-                sb.append(event.getStorageEnd());
-                break;
+        case Event:
+            Event event = (Event) task;
+            sb.append("E | ");
+            sb.append(event.isDone() ? "1" : "0");
+            sb.append(" | ");
+            sb.append(event.getUserTask());
+            sb.append(" | ");
+            sb.append(event.getStorageStart());
+            sb.append(" | ");
+            sb.append(event.getStorageEnd());
+            break;
         }
 
         return sb.toString();
     }
 
+    /**
+     * Parses one line from the data file into a {@code Task}.
+     *
+     * Returns {@code null} if the line is blank, corrupted, or cannot be parsed.
+     */
     private Task parseTask(String line) {
         if (line == null || line.trim().isEmpty()) {
             return null;
@@ -148,6 +166,11 @@ public class Storage {
         return task;
     }
 
+    /**
+     * Splits a stored line into components using the expected delimiter.
+     *
+     * @return The split parts, or {@code null} if the line is corrupted.
+     */
     private String[] splitLine(String line) {
         try {
             String[] parts = line.split(" \\| ");
@@ -162,6 +185,11 @@ public class Storage {
         }
     }
 
+    /**
+     * Constructs the appropriate {@code Task} subtype from parsed fields.
+     *
+     * @return The constructed task, or {@code null} if the type is unknown or invalid.
+     */
     private Task buildTask(String taskType, String description, String[] parts, String line) {
         switch (taskType) {
         case "T":
@@ -179,6 +207,9 @@ public class Storage {
         }
     }
 
+    /**
+     * Builds a {@code Deadline} task from the stored representation.
+     */
     private Task buildDeadline(String description, String[] parts, String line) {
         if (parts.length < 4) {
             warn("Skipping corrupted deadline", line);
@@ -193,6 +224,9 @@ public class Storage {
         }
     }
 
+    /**
+     * Builds an {@code Event} task from the stored representation.
+     */
     private Task buildEvent(String description, String[] parts, String line) {
         if (parts.length < 5) {
             warn("Skipping corrupted event", line);
@@ -209,12 +243,18 @@ public class Storage {
         }
     }
 
+    /**
+     * Marks the task as done if the stored completion flag indicates so.
+     */
     private void markDoneIfNeeded(Task task, boolean isDone) {
         if (isDone) {
             task.markDone();
         }
     }
 
+    /**
+     * Prints a warning message for a line that cannot be loaded.
+     */
     private void warn(String message, String line) {
         System.out.println("Warning: " + message + ": " + line);
     }

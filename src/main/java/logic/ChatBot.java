@@ -53,18 +53,14 @@ public class ChatBot {
             try {
                 String userInput = ui.readCommand();
 
-                // Skip empty lines
                 if (userInput == null || userInput.trim().isEmpty()) {
                     continue;
                 }
 
-                // Parse input into a Command
                 Command command = Parser.parse(userInput);
 
-                // Execute the command
                 command.execute(tasks, ui, storage);
 
-                // Check if we should exit
                 if (command.isExit()) {
                     isRunning = false;
                 }
@@ -73,7 +69,6 @@ public class ChatBot {
                 ui.showError("Something went cat-astrophically wrong: " + e.getMessage());
             }
         }
-
         ui.close();
     }
 }

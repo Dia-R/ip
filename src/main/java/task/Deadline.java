@@ -45,6 +45,11 @@ public class Deadline extends Task {
         return TaskType.Deadline;
     }
 
+    /**
+     * Returns the deadline formatted for storage.
+     *
+     * @return deadline in "yyyy-MM-dd HHmm" format
+     */
     public LocalDateTime getDeadline() {
         return deadline;
     }

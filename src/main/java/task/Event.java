@@ -53,10 +53,21 @@ public class Event extends Task {
         return TaskType.Event;
     }
 
+    /**
+     * Returns the start date and time of the event.
+     *
+     * @return Start {@code LocalDateTime}
+     */
     public LocalDateTime getStart() {
         return start;
     }
 
+
+    /**
+     * Returns the end date and time of the event.
+     *
+     * @return End {@code LocalDateTime}
+     */
     public LocalDateTime getEnd() {
         return end;
     }
