@@ -2,7 +2,7 @@ package commands;
 
 import storage.Storage;
 import task.TaskList;
-import app.Ui;
+import ui.Ui;
 
 /**
  * Represents an abstract command that can be executed.

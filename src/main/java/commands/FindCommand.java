@@ -5,7 +5,7 @@ import task.Deadline;
 import task.Event;
 import task.Task;
 import task.TaskList;
-import app.Ui;
+import ui.Ui;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;

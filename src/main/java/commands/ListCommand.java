@@ -2,7 +2,7 @@ package commands;
 
 import storage.Storage;
 import task.TaskList;
-import app.Ui;
+import ui.Ui;
 
 /**
  * Represents a command to list all tasks.
