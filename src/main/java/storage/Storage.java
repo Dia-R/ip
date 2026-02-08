@@ -3,6 +3,8 @@ package storage;
 import task.Deadline;
 import task.Event;
 import task.Task;
+import task.ToDo;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -102,6 +104,7 @@ public class Storage {
         sb.append(" | ");
         sb.append(deadline.getUserTask());
         sb.append(" | ");
+        sb.append(parseDeadline(deadline));
         break;
 
         case Event:
@@ -111,16 +114,120 @@ public class Storage {
         sb.append(" | ");
         sb.append(event.getUserTask());
         sb.append(" | ");
+        sb.append(parseEvent(event));
         break;}
 
         return sb.toString();
     }
 
     private Task parseTask(String line) {
-        Task task = null;
+        if (line == null || line.trim().isEmpty()) {
+            return null;
+        }
+
+        String[] parts = splitLine(line);
+        if (parts == null) {
+            return null;
+        }
+
+        String taskType = parts[0].trim();
+        boolean isDone = "1".equals(parts[1].trim());
+        String description = parts[2].trim();
+
+        Task task = buildTask(taskType, description, parts, line);
+        if (task == null) {
+            return null;
+        }
+
+        markDoneIfNeeded(task, isDone);
         return task;
     }
 
+    private String[] splitLine(String line) {
+        try {
+            String[] parts = line.split(" \\| ");
+            if (parts.length < 3) {
+                warn("Skipping corrupted line", line);
+                return null;
+            }
+            return parts;
+        } catch (Exception e) {
+            warn("Error splitting line (" + e.getMessage() + ")", line);
+            return null;
+        }
+    }
+
+    private Task buildTask(String taskType, String description, String[] parts, String line) {
+        switch (taskType) {
+        case "T":
+            return new ToDo(description);
+
+        case "D":
+            return buildDeadline(description, parts, line);
+
+        case "E":
+            return buildEvent(description, parts, line);
+
+        default:
+            System.out.println("Unknown task type: " + taskType);
+            return null;
+        }
+    }
+
+    private Task buildDeadline(String description, String[] parts, String line) {
+        if (parts.length < 4) {
+            warn("Skipping corrupted deadline", line);
+            return null;
+        }
+        String deadline = parts[3].trim();
+        return new Deadline(description, deadline);
+    }
+
+    private Task buildEvent(String description, String[] parts, String line) {
+        if (parts.length < 4) {
+            warn("Skipping corrupted event", line);
+            return null;
+        }
+
+        String[] times = parts[3].trim().split(" to ");
+        if (times.length != 2) {
+            warn("Skipping corrupted event", line);
+            return null;
+        }
+
+        String start = times[0].trim();
+        String end = times[1].trim();
+        return new Event(description, start, end);
+    }
+
+    private void markDoneIfNeeded(Task task, boolean isDone) {
+        if (isDone) {
+            task.markDone();
+        }
+    }
+
+    private void warn(String message, String line) {
+        System.out.println("Warning: " + message + ": " + line);
+    }
+
+    private String parseEvent(Event event) {
+        String str = event.toString();
+        int fromIndex = str.indexOf("(from: ");
+        if (fromIndex != -1) {
+            String timePart = str.substring(fromIndex + 7, str.length() - 1);
+            return timePart.replace(" to: ", " to ");
+        }
+        return "";
+    }
+
+    private String parseDeadline(Deadline deadline) {
+        String str = deadline.toString();
+        int byIndex = str.indexOf("(by: ");
+        if (byIndex != -1) {
+            return str.substring(byIndex + 5, str.length() - 1);
+        }
+        return "";
+    }
 
 
 
