@@ -9,6 +9,7 @@ public class Cat {
 
     /**
      * Starts the ChatBot programme.
+     *
      * @param args Command line arguments.
      */
     public static void main(String[] args) {
