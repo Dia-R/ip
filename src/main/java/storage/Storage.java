@@ -30,9 +30,9 @@ public class Storage {
      * Loads tasks from the data file into the task list.
      * Creates the file and necessary directories if they don't exist.
      *
-     * @param tasks array to hold tasks
-     * @return the number of tasks loaded
-     * @throws StorageException if there is an error reading the file
+     * @param tasks array to hold tasks.
+     * @return the number of tasks loaded.
+     * @throws StorageException if there is an error reading the file.
      */
     public int load(Task[] tasks) throws StorageException, FileNotFoundException {
         File file = new File(filePath);
@@ -70,10 +70,10 @@ public class Storage {
     }
 
     /**
-     * Saves tasks to the data file
+     * Saves tasks to the data file for data persistence.
      *
-     * @param tasks the array of tasks to save
-     * @param taskCount the number of tasks in the array
+     * @param tasks the array of tasks to save.
+     * @param taskCount the number of tasks in the array.
      */
     public void save(Task[] tasks, int taskCount) throws StorageException {
         try (FileWriter writer = new FileWriter(filePath)) {
@@ -227,9 +227,4 @@ public class Storage {
         }
         return "";
     }
-
-
-
-
-
 }
