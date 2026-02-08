@@ -12,7 +12,6 @@ public class Cat {
      * @param args Command line arguments.
      */
     public static void main(String[] args) {
-        ChatBot chatBot = new ChatBot("Cat");
-        chatBot.run();
+        new ChatBot("./data/cat.txt").run();
     }
 }
