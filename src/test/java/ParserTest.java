@@ -1,7 +1,7 @@
-package parser;
-
 import commands.*;
 import org.junit.jupiter.api.Test;
+import parser.Parser;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**

@@ -1,7 +1,8 @@
-package task;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
+import task.Deadline;
+import task.TaskType;
+
 import static org.junit.jupiter.api.Assertions.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
@@ -63,7 +64,7 @@ public class DeadlineTest {
 
     @Test
     public void getDeadlineForStorage_returnsCorrectFormat() {
-        String storage = deadline.getDeadlineForStorage();
+        String storage = deadline.getStorageDeadline();
         assertEquals("2024-12-15 1800", storage);
     }
 

@@ -1,7 +1,8 @@
-package task;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
+import task.Event;
+import task.TaskType;
+
 import static org.junit.jupiter.api.Assertions.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
@@ -73,12 +74,13 @@ public class EventTest {
 
     @Test
     public void getStartForStorage_returnsCorrectFormat() {
-        assertEquals("2024-12-15 1400", event.getStartForStorage());
+        assertEquals("2024-12-15 1400", event.getStorageStart());
     }
 
     @Test
     public void getEndForStorage_returnsCorrectFormat() {
-        assertEquals("2024-12-15 1600", event.getEndForStorage());
+
+        assertEquals("2024-12-15 1600", event.getStorageEnd());
     }
 
     @Test

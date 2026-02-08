@@ -1,7 +1,8 @@
-package task;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
+import task.TaskType;
+import task.ToDo;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -26,9 +27,7 @@ public class ToDoTest {
     @Test
     public void markDone_unmarkedTask_becomesMarked() {
         assertFalse(todo.isDone());
-        
         todo.markDone();
-        
         assertTrue(todo.isDone());
     }
 
@@ -45,18 +44,14 @@ public class ToDoTest {
     public void markNotDone_markedTask_becomesUnmarked() {
         todo.markDone();
         assertTrue(todo.isDone());
-        
-        todo.markNotDone();
-        
+        todo.unmarkDone();
         assertFalse(todo.isDone());
     }
 
     @Test
     public void markNotDone_unmarkedTask_remainsUnmarked() {
         assertFalse(todo.isDone());
-        
-        todo.markNotDone();
-        
+        todo.unmarkDone();
         assertFalse(todo.isDone());
     }
 

@@ -1,7 +1,9 @@
-package task;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
+import task.Task;
+import task.TaskList;
+import task.ToDo;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
