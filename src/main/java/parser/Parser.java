@@ -40,6 +40,8 @@ public class Parser {
         } else if (lowerCaseInput.startsWith("find ")) {
             String arg = trimmedInput.substring(5).trim();
             return new FindCommand(arg);
+        } else if (lowerCaseInput.startsWith("cheer")) {
+            return new CheerCommand();
         } else {
             return new AddCommand(lowerCaseInput);
         }
