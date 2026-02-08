@@ -1,12 +1,18 @@
 package logic;
+
 import parser.CommandParser;
 import parser.ParsedCommand;
+import storage.Storage;
+import storage.StorageException;
 import task.Task;
 import task.TaskList;
+
+import java.io.FileNotFoundException;
 import java.util.Scanner;
 import task.ToDo;
 import task.Deadline;
 import task.Event;
+import java.io.File;
 
 
 /**
@@ -18,9 +24,11 @@ public class ChatBot {
     private Scanner scanner;
     private TaskList taskList;
     private CommandParser parser;
+    private Storage storage;
 
     /**
      * Creates a ChatBot with the given name and initializes it to run.
+     * Saves and loads tasks to and from the disk.
      *
      * @param name Name of the ChatBot.
      */
@@ -29,6 +37,34 @@ public class ChatBot {
         this.isRunning = true;
         this.scanner = new Scanner(System.in);
         this.taskList = new TaskList();
+
+        String filePath = "." + File.separator + "data" + File.separator + "Cat.txt";
+        this.storage = new Storage(filePath);
+        loadTasks();
+    }
+
+    private void loadTasks() {
+        try {
+            Task[] tempTasks = new Task[100];
+            int count = storage.load(tempTasks);
+            for (int i = 0; i < count; i++) {
+                taskList.addTask(tempTasks[i]);
+            }
+        } catch (FileNotFoundException | StorageException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void saveTasks() {
+        try {
+            Task[] tasks = new Task[taskList.getTaskCount()];
+            for (int i = 0; i < taskList.getTaskCount(); i++) {
+                tasks[i] = taskList.getTask(i);
+            }
+            storage.save(tasks, taskList.getTaskCount());
+        } catch (StorageException e) {
+            System.out.println("Purr-retty sure I failed to save tasks: " + e.getMessage());
+        }
     }
 
     /**
@@ -128,6 +164,7 @@ public class ChatBot {
         }
         ToDo todo = new ToDo(desc);
         taskList.addTask(todo);
+        saveTasks();
         System.out.println("Nya-ice! I've added: " + argument);
         System.out.println(tunaMessage(taskList.getTaskCount()));
     }
@@ -146,6 +183,7 @@ public class ChatBot {
 
         Deadline deadline = new Deadline(description, by);
         taskList.addTask(deadline);
+        saveTasks();
         System.out.println("Nya-ice! I've added: " + argument);
         System.out.println(tunaMessage(taskList.getTaskCount()));
     }
@@ -165,6 +203,7 @@ public class ChatBot {
 
         Event event = new Event(description, start, end);
         taskList.addTask(event);
+        saveTasks();
         System.out.println("Nya-ice! I've added: " + argument);
         System.out.println(tunaMessage(taskList.getTaskCount()));
     }
@@ -178,6 +217,7 @@ public class ChatBot {
         try {
             int taskNumber = Integer.parseInt(argument.trim());
             Task task = taskList.markTask(taskNumber);
+            saveTasks();
             System.out.println("You're pawsitively efficient! This task has been marked as done:");
             System.out.println(task);
         } catch (NumberFormatException e) {
@@ -196,6 +236,7 @@ public class ChatBot {
         try {
             int taskNumber = Integer.parseInt(argument.trim());
             Task task = taskList.unmarkTask(taskNumber);
+            saveTasks();
             System.out.println("I was looking forward to a cat nap... but this task is not done yet:");
             System.out.println(task);
         } catch (NumberFormatException e) {
@@ -214,6 +255,7 @@ public class ChatBot {
         try {
             int taskNumber = Integer.parseInt(argument.trim());
             Task removedTask = taskList.deleteTask(taskNumber);
+            saveTasks();
             System.out.println("A smart kitty has removed this task:");
             System.out.println(removedTask);
             System.out.println(tunaMessage(taskList.getTaskCount()));
