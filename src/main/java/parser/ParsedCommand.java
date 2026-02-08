@@ -4,15 +4,15 @@ package parser;
  * and an optional argument extracted from user input.
  */
 public class ParsedCommand {
-    private CommandParser.CommandType type;
-    private String argument;
+    private final CommandParser.CommandType type;
+    private final String argument;
 
     /**
      * Creates a ParsedCommand with the specified command type
      * and associated argument.
      *
-     * @param type
-     * @param argument
+     * @param type the type of the user's command.
+     * @param argument the subject of the user's command.
      */
     public ParsedCommand(CommandParser.CommandType type, String argument) {
         this.type = type;

@@ -1,12 +1,21 @@
-todo buy groceries
-todo clean room
-deadline submit report /by 2024-12-15 2359
-deadline renew passport /by 2024-12-20 1700
-event doctor appointment /from 2024-12-15 0900 /to 2024-12-15 1000
-event lunch with friends /from 2024-12-15 1200 /to 2024-12-15 1400
+todo buy cat food
+todo water the plants
+todo call mom
+deadline return library book /by 2024-12-15 1700
+deadline submit CS2103T assignment /by 2024-12-20 2359
+deadline pay electricity bill /by 2024-12-31 1200
+deadline prepare presentation /by 2025-01-05 0900
+event team meeting /from 2024-12-10 1400 /to 2024-12-10 1600
+event dentist appointment /from 2024-12-18 1000 /to 2024-12-18 1100
+event Christmas dinner /from 2024-12-25 1800 /to 2024-12-25 2100
+event project workshop /from 2025-01-08 0900 /to 2025-01-08 1700
 list
 mark 1
 mark 3
+unmark 1
 delete 2
-list
+find 2024-12-15
+find 2024-12-25
+find 2025-01-08
+find 2024-11-01
 bye

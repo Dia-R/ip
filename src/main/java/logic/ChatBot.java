@@ -6,14 +6,12 @@ import storage.Storage;
 import storage.StorageException;
 import task.Task;
 import task.TaskList;
-import java.io.FileNotFoundException;
 import java.util.Scanner;
 import task.ToDo;
 import task.Deadline;
 import task.Event;
 import java.io.File;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
@@ -121,6 +119,10 @@ public class ChatBot {
 
         case Delete:
         executeDelete(command.getArgument());
+            break;
+
+        case Find:
+            executeFind(command.getArgument());
             break;
 
         }
@@ -288,14 +290,68 @@ public class ChatBot {
         }
     }
 
+    private void executeFind(String argument) {
+        if (argument == null || argument.trim().isEmpty()) {
+            System.out.println("Which date should I look fur?");
+            return;
+        }
+
+        try {
+            LocalDate searchDate = LocalDate.parse(argument.trim());
+            DateTimeFormatter displayFormat = DateTimeFormatter.ofPattern("MMM dd yyyy");
+
+            System.out.println("Digging up tasks on " + searchDate.format(displayFormat) + "...");
+
+            boolean found = false;
+            int count = 0;
+
+            for (int i = 0; i < taskList.getTaskCount(); i++) {
+                Task task = taskList.getTask(i);
+
+                if (task instanceof Deadline) {
+                    Deadline deadline = (Deadline) task;
+                    if (deadline.getDeadline().toLocalDate().equals(searchDate)) {
+                        if (!found) {
+                            System.out.println("\nDeadlines on this date:");
+                            found = true;
+                        }
+                        System.out.println((++count) + ". " + task);
+                    }
+                } else if (task instanceof Event) {
+                    Event event = (Event) task;
+                    LocalDate eventDate = event.getStart().toLocalDate();
+                    if (eventDate.equals(searchDate)) {
+                        if (!found) {
+                            System.out.println("\nEvents on this date:");
+                            found = true;
+                        } else if (count == 0) {
+                            System.out.println("\nEvents on this date:");
+                        }
+                        System.out.println((++count) + ". " + task);
+                    }
+                }
+            }
+
+            if (!found) {
+                System.out.println("No tasks found on this date. Take a cat nap!");
+            }
+
+        } catch (DateTimeParseException e) {
+            System.out.println("Meow-ch, that doesn't look right!");
+            System.out.println("Please use yyyy-MM-dd (e.g., 2024-12-02)!!");
+        }
+    }
+
     private void printInstructions() {
-        System.out.println("Here’s what CatBot can do for you:");
+        System.out.println("Here's what CatBot can do for you:");
         System.out.println("• todo <description>");
-        System.out.println("• deadline <description> /by <date>");
-        System.out.println("• event <description> /from <start> /to <end>");
+        System.out.println("• deadline <description> /by <yyyy-MM-dd HHmm>");
+        System.out.println("• event <description> /from <yyyy-MM-dd HHmm> /to <yyyy-MM-dd HHmm>");
         System.out.println("• list");
         System.out.println("• mark <task number>");
         System.out.println("• unmark <task number>");
+        System.out.println("• delete <task number>");
+        System.out.println("• find <yyyy-MM-dd>");
         System.out.println("• bye");
         System.out.println();
     }
