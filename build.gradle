@@ -2,7 +2,6 @@ plugins {
     id 'java'
     id 'application'
     id 'checkstyle'
-    id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
 repositories {
@@ -32,15 +31,22 @@ application {
     mainClass.set("app.Cat")
 }
 
-shadowJar {
-    archiveBaseName = "cat"
-    archiveClassifier = null
-}
-
 checkstyle {
     toolVersion = '10.2'
 }
 
 run {
     standardInput = System.in
+}
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': 'app.Cat'
+    }
+    archiveBaseName = 'cat'
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    with jar
 }
