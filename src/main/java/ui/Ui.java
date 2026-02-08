@@ -43,7 +43,7 @@ public class Ui {
         System.out.println("• mark <task number>");
         System.out.println("• unmark <task number>");
         System.out.println("• delete <task number>");
-        System.out.println("• find <yyyy-MM-dd>");
+        System.out.println("• find <keyword> or find <yyyy-MM-dd>");
         System.out.println("• bye");
         System.out.println();
     }
@@ -82,6 +82,15 @@ public class Ui {
             }
             System.out.println();
         }
+    }
+
+    /**
+     * Displays a message when no matching tasks are found (keyword search).
+     *
+     * @param keyword the keyword that was searched
+     */
+    public void showNoMatchingTasks(String keyword) {
+        System.out.println("No tasks found matching '" + keyword + "'. Meow-be try another keyword?");
     }
 
     /**
@@ -225,5 +234,23 @@ public class Ui {
      */
     public void close() {
         scanner.close();
+    }
+
+    /**
+     * Displays the header for find by keyword results.
+     *
+     * @param keyword the keyword being searched
+     */
+    public void showFindByKeywordHeader(String keyword) {
+        System.out.println("Here are the matching tasks in your list:");
+    }
+
+    /**
+     * Displays the header for find by date results.
+     *
+     * @param dateString the formatted date being searched
+     */
+    public void showFindByDateHeader(String dateString) {
+        System.out.println("Searching fur tasks on " + dateString + "...");
     }
 }
