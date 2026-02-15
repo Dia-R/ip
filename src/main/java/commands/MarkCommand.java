@@ -5,7 +5,6 @@ import storage.StorageException;
 import task.Task;
 
 import task.TaskList;
-
 import ui.Ui;
 
 /**
@@ -49,6 +48,39 @@ public class MarkCommand extends Command {
         }
     }
 
+    /**
+     * Executes the mark command for GUI mode and returns the result.
+     *
+     * @param tasks the task list to operate on
+     * @param storage the storage to save tasks
+     * @return the response message
+     */
+    @Override
+    public String executeForGui(TaskList tasks, Storage storage) {
+        if (argument == null || argument.trim().isEmpty()) {
+            return "Meow? Which task do you want to mark?";
+        }
+
+        try {
+            int taskNumber = Integer.parseInt(argument.trim());
+            Task task = tasks.markTask(taskNumber);
+
+            String saveResult = saveToStorageGui(tasks, storage);
+            if (saveResult != null) {
+                return saveResult;
+            }
+
+            return "You're pawsitively efficient! This task has been marked as done:\n" + task;
+        } catch (NumberFormatException e) {
+            return "That doesn't look like a number, furriend!";
+        } catch (IndexOutOfBoundsException e) {
+            return "No such task to mark, meow!";
+        }
+    }
+
+    /**
+     * Saves the current task list to persistent storage.
+     */
     private void saveToStorage(TaskList tasks, Storage storage, Ui ui) {
         try {
             Task[] taskArray = new Task[tasks.getTaskCount()];
@@ -58,6 +90,24 @@ public class MarkCommand extends Command {
             storage.save(taskArray, tasks.getTaskCount());
         } catch (StorageException e) {
             ui.showError("Oh no! Failed to save tasks: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Saves the current task list to persistent storage for GUI mode.
+     *
+     * @return error message if save failed, null if successful
+     */
+    private String saveToStorageGui(TaskList tasks, Storage storage) {
+        try {
+            Task[] taskArray = new Task[tasks.getTaskCount()];
+            for (int i = 0; i < tasks.getTaskCount(); i++) {
+                taskArray[i] = tasks.getTask(i);
+            }
+            storage.save(taskArray, tasks.getTaskCount());
+            return null;
+        } catch (StorageException e) {
+            return "Oh no! Failed to save tasks: " + e.getMessage();
         }
     }
 }

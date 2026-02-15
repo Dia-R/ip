@@ -1,5 +1,4 @@
-package app;
-
+package client;
 import logic.ChatBot;
 
 /**

@@ -8,6 +8,7 @@ import commands.ListCommand;
 import commands.MarkCommand;
 import commands.UnmarkCommand;
 import commands.FindCommand;
+import commands.CheerCommand;
 
 /**
  * Parses user input strings into Command objects that can be executed.

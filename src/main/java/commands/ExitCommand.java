@@ -1,9 +1,7 @@
 package commands;
 
 import storage.Storage;
-
 import task.TaskList;
-
 import ui.Ui;
 
 /**
@@ -21,6 +19,18 @@ public class ExitCommand extends Command {
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) {
         ui.showGoodbye();
+    }
+
+    /**
+     * Executes the exit command by displaying goodbye message on GUI.
+     *
+     * @param tasks the task list to operate on
+     * @param storage the storage to save/load tasks
+     * @return
+     */
+    @Override
+    public String executeForGui(TaskList tasks, Storage storage) {
+        return "Aww, see mew next time!";
     }
 
     /**

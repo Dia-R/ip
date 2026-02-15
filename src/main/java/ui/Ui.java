@@ -1,7 +1,6 @@
 package ui;
 
 import task.Task;
-
 import java.util.Scanner;
 
 /**

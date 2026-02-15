@@ -39,6 +39,26 @@ public class CheerCommand extends Command {
     }
 
     /**
+     * Executes the cheer command for GUI mode and returns a random quote.
+     *
+     * @param tasks the task list (not used)
+     * @param storage the storage (not used)
+     * @return a random motivational quote
+     */
+    @Override
+    public String executeForGui(TaskList tasks, Storage storage) {
+        if (quotes == null) {
+            quotes = loadQuotes();
+        }
+
+        if (quotes.isEmpty()) {
+            return "Meow! I couldn't find any motivational quotes!";
+        }
+
+        return getRandomQuote();
+    }
+
+    /**
      * Loads motivational quotes from the text file in resources.
      *
      * @return list of quotes
@@ -65,10 +85,19 @@ public class CheerCommand extends Command {
     }
 
     /**
-     * Displays a random quote with formatting.
+     * Gets a random quote from the loaded quotes.
+     *
+     * @return a random quote string
+     */
+    private String getRandomQuote() {
+        return quotes.get(random.nextInt(quotes.size()));
+    }
+
+    /**
+     * Displays a random quote with formatting (for CLI mode).
      */
     private void displayRandomQuote() {
-        String quote = quotes.get(random.nextInt(quotes.size()));
+        String quote = getRandomQuote();
 
         List<String> lines = wordWrap(quote, 40);
         for (String line : lines) {

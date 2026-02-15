@@ -1,4 +1,5 @@
 package task;
+
 /**
  * Represents a task provided by a user.
  * Stores the task description and allows access to it.

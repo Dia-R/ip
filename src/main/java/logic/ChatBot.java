@@ -75,4 +75,24 @@ public class ChatBot {
         }
         ui.close();
     }
+
+    /**
+     * Generates a response for the user's chat message for GUI mode.
+     *
+     * @param input the user's input string
+     * @return the chatbot's response
+     */
+    public String getResponse(String input) {
+        try {
+            if (input == null || input.trim().isEmpty()) {
+                return "Meow? Did you say something?";
+            }
+
+            Command command = Parser.parse(input);
+            return command.executeForGui(tasks, storage);
+
+        } catch (Exception e) {
+            return "Something went cat-astrophically wrong: " + e.getMessage();
+        }
+    }
 }
