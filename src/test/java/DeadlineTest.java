@@ -21,6 +21,10 @@ public class DeadlineTest {
         deadline = new Deadline("return book", testDate);
     }
 
+    /**
+     * Verify that a Deadline can be constructed with valid inputs
+     * and correctly stores description, type, date, and initial completion status.
+     */
     @Test
     public void constructor_validInputs_createsDeadline() {
         assertEquals("return book", deadline.getUserTask());
@@ -52,6 +56,10 @@ public class DeadlineTest {
         });
     }
 
+    /**
+     * Verify that getDeadline() returns the correct LocalDateTime
+     * with all date/time components intact.
+     */
     @Test
     public void getDeadline_returnsCorrectDateTime() {
         assertEquals(testDate, deadline.getDeadline());
@@ -62,12 +70,20 @@ public class DeadlineTest {
         assertEquals(0, deadline.getDeadline().getMinute());
     }
 
+    /**
+     * Verify that getStorageDeadline() returns the deadline
+     * in the correct storage format "yyyy-MM-dd HHmm".
+     */
     @Test
     public void getDeadlineForStorage_returnsCorrectFormat() {
         String storage = deadline.getStorageDeadline();
         assertEquals("2024-12-15 1800", storage);
     }
 
+    /**
+     * Verify that toString() for a unmarked deadline shows
+     * the [ ] checkbox instead of [X].
+     */
     @Test
     public void toString_unmarkedDeadline_correctFormat() {
         String result = deadline.toString();
@@ -79,6 +95,10 @@ public class DeadlineTest {
         assertTrue(result.contains("6:00PM"));
     }
 
+    /**
+     * Verify that toString() for a marked deadline shows
+     * the [X] checkbox instead of [ ].
+     */
     @Test
     public void toString_markedDeadline_correctFormat() {
         deadline.markDone();
@@ -89,6 +109,9 @@ public class DeadlineTest {
         assertTrue(result.contains("return book"));
     }
 
+    /**
+     * Verify that createFromString() correctly handles midnight time (0000).
+     */
     @Test
     public void createFromString_midnightTime_success() {
         Deadline d = Deadline.createFromString("task", "2024-12-15 0000");
