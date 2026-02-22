@@ -3,6 +3,7 @@ plugins {
     id 'application'
     id 'checkstyle'
     id 'org.openjfx.javafxplugin' version '0.0.13'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
 repositories {
@@ -48,7 +49,7 @@ test {
 }
 
 application {
-    mainClass.set("app.Cat")
+    mainClass.set("gui.Launcher")
 }
 
 checkstyle {
@@ -60,14 +61,10 @@ run {
     enableAssertions = true
 }
 
-task fatJar(type: Jar) {
+tasks.named("shadowJar") {
+    archiveBaseName.set("cat")
+    archiveClassifier.set("")
     manifest {
-        attributes 'Main-Class': 'app.Cat'
+        attributes("Main-Class": application.mainClass.get())
     }
-    archiveBaseName = 'cat'
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    from {
-        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
-    }
-    with jar
 }
