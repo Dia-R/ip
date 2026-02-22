@@ -25,6 +25,17 @@ import java.util.Scanner;
  * Invalid or corrupted lines are skipped with a warning.
  */
 public class Storage {
+
+    private static final String TYPE_TODO = "T";
+    private static final String TYPE_DEADLINE = "D";
+    private static final String TYPE_EVENT = "E";
+
+    private static final String DONE_FLAG = "1";
+    private static final String NOT_DONE_FLAG = "0";
+
+    private static final String SEPARATOR = " | ";
+    private static final String FIELD_DELIMITER_REGEX = " \\| ";
+
     private final String filePath;
 
     /**
@@ -40,15 +51,13 @@ public class Storage {
     }
 
     /**
-     * Loads tasks from disk into the given array.
-     * Ensures parent directories exist and creates the data file if missing.
-     * Any invalid lines are skipped.
+     * Ensures the data file and its parent directories exist.
+     * Creates them if they don't exist.
      *
-     * @param tasks Array to hold loaded tasks.
-     * @return Number of tasks loaded into the array.
-     * @throws StorageException If directory or file creation fails, or file cannot be read.
+     * @return the File object for the data file
+     * @throws StorageException if directory or file creation fails
      */
-    public int load(Task[] tasks) throws StorageException {
+    private File ensureFileExists() throws StorageException {
         File file = new File(filePath);
 
         File parentDir = file.getParentFile();
@@ -61,13 +70,30 @@ public class Storage {
         if (!file.exists()) {
             try {
                 if (!file.createNewFile()) {
-                    throw new StorageException("You've got to be kitten me. I can't create the data file");
+                    throw new StorageException("You've got to be kitten me. I can't create the data file.");
                 }
             } catch (IOException e) {
                 throw new StorageException("Hissterical! Look at what's happened: " + e.getMessage());
             }
-            return 0;
         }
+
+        return file;
+    }
+
+    /**
+     * Loads tasks from disk into the given array.
+     * Any invalid lines are skipped.
+     *
+     * @param tasks Array to hold loaded tasks.
+     * @return Number of tasks loaded into the array.
+     * @throws StorageException If directory or file creation fails, or file cannot be read.
+     */
+    public int load(Task[] tasks) throws StorageException {
+        if (tasks == null) {
+            throw new IllegalArgumentException("tasks array must not be null");
+        }
+
+        File file = ensureFileExists();
 
         int taskCount = 0;
         try (Scanner scanner = new Scanner(file)) {
@@ -75,7 +101,8 @@ public class Storage {
                 String line = scanner.nextLine();
                 Task task = parseTask(line);
                 if (task != null) {
-                    tasks[taskCount++] = task;
+                    tasks[taskCount] = task;
+                    taskCount++;
                 }
             }
         } catch (FileNotFoundException e) {
@@ -98,7 +125,12 @@ public class Storage {
 
         try (FileWriter writer = new FileWriter(filePath)) {
             for (int i = 0; i < taskCount; i++) {
-                writer.write(formatTask(tasks[i]) + System.lineSeparator());
+                if (tasks[i] == null) {
+                    warn("Skipping null task while saving", "index=" + i);
+                    continue;
+                }
+                writer.write(formatTask(tasks[i]));
+                writer.write(System.lineSeparator());
             }
         } catch (IOException e) {
             throw new StorageException("Someone's got a cat-titude today! The task can't be saved: " + e.getMessage());
@@ -112,40 +144,22 @@ public class Storage {
      * @return A single-line representation of the task suitable for saving.
      */
     private String formatTask(Task task) {
-        StringBuilder sb = new StringBuilder();
+        String doneFlag = task.isDone() ? DONE_FLAG : NOT_DONE_FLAG;
 
-        switch (task.getType()) {
-        case Todo:
-            sb.append("T | ");
-            sb.append(task.isDone() ? "1" : "0");
-            sb.append(" | ");
-            sb.append(task.getUserTask());
-            break;
-
-        case Deadline:
-            Deadline deadline = (Deadline) task;
-            sb.append("D | ");
-            sb.append(deadline.isDone() ? "1" : "0");
-            sb.append(" | ");
-            sb.append(deadline.getUserTask());
-            sb.append(" | ");
-            sb.append(deadline.getStorageDeadline());
-            break;
-
-        case Event:
-            Event event = (Event) task;
-            sb.append("E | ");
-            sb.append(event.isDone() ? "1" : "0");
-            sb.append(" | ");
-            sb.append(event.getUserTask());
-            sb.append(" | ");
-            sb.append(event.getStorageStart());
-            sb.append(" | ");
-            sb.append(event.getStorageEnd());
-            break;
-        }
-
-        return sb.toString();
+        return switch (task.getType()) {
+            case Todo -> TYPE_TODO + SEPARATOR + doneFlag + SEPARATOR + task.getUserTask();
+            case Deadline -> {
+                Deadline deadline = (Deadline) task;
+                yield TYPE_DEADLINE + SEPARATOR + doneFlag + SEPARATOR + deadline.getUserTask()
+                        + SEPARATOR + deadline.getStorageDeadline();
+            }
+            case Event -> {
+                Event event = (Event) task;
+                yield TYPE_EVENT + SEPARATOR + doneFlag + SEPARATOR + event.getUserTask()
+                        + SEPARATOR + event.getStorageStart()
+                        + SEPARATOR + event.getStorageEnd();
+            }
+        };
     }
 
     /**
@@ -164,7 +178,7 @@ public class Storage {
         }
 
         String taskType = parts[0].trim();
-        boolean isDone = "1".equals(parts[1].trim());
+        boolean isDone = DONE_FLAG.equals(parts[1].trim());
         String description = parts[2].trim();
 
         Task task = buildTask(taskType, description, parts, line);
@@ -182,17 +196,12 @@ public class Storage {
      * @return The split parts, or {@code null} if the line is corrupted.
      */
     private String[] splitLine(String line) {
-        try {
-            String[] parts = line.split(" \\| ");
-            if (parts.length < 3) {
-                warn("Skipping corrupted line", line);
-                return null;
-            }
-            return parts;
-        } catch (Exception e) {
-            warn("Error splitting line (" + e.getMessage() + ")", line);
+        String[] parts = line.split(FIELD_DELIMITER_REGEX);
+        if (parts.length < 3) {
+            warn("Skipping corrupted line", line);
             return null;
         }
+        return parts;
     }
 
     /**
@@ -201,20 +210,15 @@ public class Storage {
      * @return The constructed task, or {@code null} if the type is unknown or invalid.
      */
     private Task buildTask(String taskType, String description, String[] parts, String line) {
-        switch (taskType) {
-        case "T":
-            return new ToDo(description);
-
-        case "D":
-            return buildDeadline(description, parts, line);
-
-        case "E":
-            return buildEvent(description, parts, line);
-
-        default:
-            System.out.println("Unknown task type: " + taskType);
-            return null;
-        }
+        return switch (taskType) {
+            case TYPE_TODO -> new ToDo(description);
+            case TYPE_DEADLINE -> buildDeadline(description, parts, line);
+            case TYPE_EVENT -> buildEvent(description, parts, line);
+            default -> {
+                warn("Unknown task type", line);
+                yield null;
+            }
+        };
     }
 
     /**
@@ -225,6 +229,7 @@ public class Storage {
             warn("Skipping corrupted deadline", line);
             return null;
         }
+
         try {
             String deadlineStr = parts[3].trim();
             return Deadline.createFromString(description, deadlineStr);
