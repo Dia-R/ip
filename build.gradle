@@ -57,6 +57,7 @@ checkstyle {
 
 run {
     standardInput = System.in
+    enableAssertions = true
 }
 
 task fatJar(type: Jar) {

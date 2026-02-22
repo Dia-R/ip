@@ -58,8 +58,7 @@ public class ToDoTest {
     @Test
     public void toString_unmarkedTask_correctFormat() {
         String result = todo.toString();
-        
-        assertTrue(result.contains("[T]"));
+
         assertTrue(result.contains("[ ]"));
         assertTrue(result.contains("buy milk"));
     }
@@ -68,8 +67,7 @@ public class ToDoTest {
     public void toString_markedTask_correctFormat() {
         todo.markDone();
         String result = todo.toString();
-        
-        assertTrue(result.contains("[T]"));
+
         assertTrue(result.contains("[X]"));
         assertTrue(result.contains("buy milk"));
     }

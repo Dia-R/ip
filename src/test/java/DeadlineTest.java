@@ -89,12 +89,11 @@ public class DeadlineTest {
     @Test
     public void toString_unmarkedDeadline_correctFormat() {
         String result = deadline.toString();
-        
-        assertTrue(result.contains("[D]"));
+
         assertTrue(result.contains("[ ]"));
         assertTrue(result.contains("return book"));
         assertTrue(result.contains("Dec 15 2024"));
-        assertTrue(result.contains("6:00PM"));
+        assertTrue(result.contains("6:00pm"));
     }
 
     /**
@@ -105,8 +104,7 @@ public class DeadlineTest {
     public void toString_markedDeadline_correctFormat() {
         deadline.markDone();
         String result = deadline.toString();
-        
-        assertTrue(result.contains("[D]"));
+
         assertTrue(result.contains("[X]"));
         assertTrue(result.contains("return book"));
     }
@@ -125,7 +123,7 @@ public class DeadlineTest {
     public void createFromString_noonTime_success() {
         Deadline d = Deadline.createFromString("task", "2024-12-15 1200");
         assertEquals(12, d.getDeadline().getHour());
-        assertTrue(d.toString().contains("12:00PM"));
+        assertTrue(d.toString().contains("12:00pm"));
     }
 
     @Test

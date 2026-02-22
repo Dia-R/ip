@@ -4,3 +4,6 @@ D | 0 | pay electricity bill | 2024-12-31 1200
 D | 1 | prepare presentation | 2025-01-05 0900
 E | 0 | team meeting | 2024-12-10 1400 | 2024-12-10 1600
 E | 0 | dentist appointment | 2024-12-18 1000 | 2024-12-18 1100
+D | 0 | eat food | 2024-03-28 1200
+D | 0 | eat junk | 2024-03-29 0000
+D | 0 | testing | 2024-12-15 1200
