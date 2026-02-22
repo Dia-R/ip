@@ -24,6 +24,9 @@ public class TaskList {
      * @throws IllegalStateException if the task list is full.
      */
     public void addTask(Task task) {
+        assert task != null : "Task should not be null.";
+        assert taskCount >= 0 && taskCount <= MAX_TASKS : "Task count should be within valid range";
+
         if (taskCount < MAX_TASKS) {
             allTasks[taskCount++] = task;
         } else {
@@ -85,8 +88,10 @@ public class TaskList {
      * @return task
      */
     public Task markTask(int taskNumber) {
+        assert taskNumber > 0 : "Task Number should be greater than 0.";
         Task task = getTask(taskNumber - 1);
         task.markDone();
+        assert task.isDone() : "Task should be marked as done.";
         return task;
     }
 
@@ -97,8 +102,10 @@ public class TaskList {
      * @return task
      */
     public Task unmarkTask(int taskNumber) {
+        assert taskNumber > 0 : "Task Number should be greater than 0.";
         Task task = getTask(taskNumber - 1);
         task.unmarkDone();
+        assert !task.isDone() : "Task should be marked as undone.";
         return task;
     }
 
@@ -117,12 +124,18 @@ public class TaskList {
             throw new IndexOutOfBoundsException("No such task to delete, I'm afurr-aid...");
         }
 
+        int oldTaskCount = taskCount;
+
         Task removedTask = allTasks[taskNumber - 1];
+        assert removedTask != null : "Task to be deleted should not be null";
+
         for (int i = taskNumber - 1; i < taskCount - 1; i++) {
             allTasks[i] = allTasks[i + 1];
         }
         allTasks[taskCount - 1] = null;
         taskCount--;
+        assert taskCount == oldTaskCount - 1 : "Task count should decrease by 1.";
+        assert allTasks[taskCount] == null : "Last position should be null.";
 
         return removedTask;
     }
