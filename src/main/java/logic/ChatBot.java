@@ -28,7 +28,9 @@ public class ChatBot {
      */
     public ChatBot(String filePath) {
         ui = new Ui();
+        assert filePath != null : "File path should not be null";
         storage = new Storage(filePath);
+
         try {
             Task[] loadedTasks = new Task[100];
             int count = storage.load(loadedTasks);
@@ -41,6 +43,7 @@ public class ChatBot {
             ui.showLoadingError();
             tasks = new TaskList();
         }
+        assert tasks != null : "Task list should be initialized";
     }
 
     /**

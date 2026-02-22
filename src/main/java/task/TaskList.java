@@ -88,7 +88,6 @@ public class TaskList {
      * @return task
      */
     public Task markTask(int taskNumber) {
-        assert taskNumber > 0 : "Task Number should be greater than 0.";
         Task task = getTask(taskNumber - 1);
         task.markDone();
         assert task.isDone() : "Task should be marked as done.";
@@ -102,7 +101,6 @@ public class TaskList {
      * @return task
      */
     public Task unmarkTask(int taskNumber) {
-        assert taskNumber > 0 : "Task Number should be greater than 0.";
         Task task = getTask(taskNumber - 1);
         task.unmarkDone();
         assert !task.isDone() : "Task should be marked as undone.";

@@ -33,6 +33,9 @@ public class Storage {
      * @param filePath Relative path to the data file
      */
     public Storage(String filePath) {
+        assert filePath != null : "File path should not be null";
+        assert !filePath.trim().isEmpty() : "File path should not be empty";
+
         this.filePath = filePath;
     }
 
@@ -89,6 +92,10 @@ public class Storage {
      * @param taskCount the number of tasks in the array.
      */
     public void save(Task[] tasks, int taskCount) throws StorageException {
+        assert tasks != null : "Task array should not be null";
+        assert taskCount >= 0 : "Task count should not be negative";
+        assert taskCount <= tasks.length : "Task count should not exceed array length";
+
         try (FileWriter writer = new FileWriter(filePath)) {
             for (int i = 0; i < taskCount; i++) {
                 writer.write(formatTask(tasks[i]) + System.lineSeparator());
