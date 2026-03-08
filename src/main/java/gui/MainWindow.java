@@ -8,6 +8,9 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import logic.ChatBot;
+import javafx.animation.PauseTransition;
+import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.util.Objects;
 
@@ -88,5 +91,16 @@ public class MainWindow extends AnchorPane {
         );
 
         userInput.clear();
+
+        if (input.trim().equalsIgnoreCase("bye")) {
+            userInput.setDisable(true);
+            sendButton.setDisable(true);
+            PauseTransition pause = new PauseTransition(Duration.seconds(1));
+            pause.setOnFinished(event -> {
+                Stage stage = (Stage) dialogContainer.getScene().getWindow();
+                stage.close();
+            });
+            pause.play();
+        }
     }
 }

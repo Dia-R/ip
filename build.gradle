@@ -68,3 +68,7 @@ tasks.named("shadowJar") {
         attributes("Main-Class": application.mainClass.get())
     }
 }
+
+tasks.named("startScripts") { mustRunAfter("shadowJar") }
+tasks.named("distTar")      { mustRunAfter("shadowJar") }
+tasks.named("distZip")      { mustRunAfter("shadowJar") }

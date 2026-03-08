@@ -1,4 +1,4 @@
-D | 1 | submit cs2103t assignment | 2024-12-20 2359
+D | 1 | submit cs2103t assignment | 2024-12-20 2359 | hiehfiehfiehfie
 D | 0 | pay electricity bill | 2024-12-31 1200
 D | 1 | prepare presentation | 2025-01-05 0900
 E | 0 | team meeting | 2024-12-10 1400 | 2024-12-10 1600
@@ -9,5 +9,4 @@ D | 0 | testing | 2024-12-15 1200
 T | 0 | submit
 T | 0 | bye bye
 T | 0 | bye
-T | 0 | 1 | hi
 T | 0 | hi
