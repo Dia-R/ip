@@ -137,4 +137,14 @@ public class TaskList {
 
         return removedTask;
     }
+
+    /**
+     * Removes all tasks from the task list.
+     */
+    public void clearAll() {
+        for (int i = 0; i < taskCount; i++) {
+            allTasks[i] = null;
+        }
+        taskCount = 0;
+    }
 }

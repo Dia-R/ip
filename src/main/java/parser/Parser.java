@@ -1,15 +1,6 @@
 package parser;
 
-import commands.AddCommand;
-import commands.CheerCommand;
-import commands.Command;
-import commands.DeleteCommand;
-import commands.ExitCommand;
-import commands.FindCommand;
-import commands.ListCommand;
-import commands.MarkCommand;
-import commands.NoteCommand;
-import commands.UnmarkCommand;
+import commands.*;
 
 /**
  * Parses user input strings into Command objects that can be executed.
@@ -53,6 +44,8 @@ public class Parser {
             return new NoteCommand(args);
         case "cheer":
             return new CheerCommand();
+        case "clear":
+            return new ClearCommand();
         default:
             return new AddCommand(trimmedInput);
         }
