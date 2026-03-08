@@ -19,6 +19,27 @@ import java.util.Objects;
  */
 public class MainWindow extends AnchorPane {
 
+    private static final String WELCOME_MESSAGE =
+            "Hello, furrr-iend! Do you need a helping paw?\n\n" +
+                    "ADDING TASKS\n" +
+                    "• todo <description>\n" +
+                    "• deadline <description> /by <yyyy-MM-dd HHmm>\n" +
+                    "• event <description> /from <yyyy-MM-dd HHmm> /to <yyyy-MM-dd HHmm>\n\n" +
+                    "MANAGING TASKS\n" +
+                    "• list — show all tasks\n" +
+                    "• mark <number> — mark as done\n" +
+                    "• unmark <number> — mark as not done\n" +
+                    "• delete <number> — remove one task\n" +
+                    "• clear — remove ALL tasks\n" +
+                    "• note <number> <text> — attach a note to a task\n\n" +
+                    "SEARCHING\n" +
+                    "• find <keyword> or find <yyyy-MM-dd>\n\n" +
+                    "OTHER\n" +
+                    "• cheer — get some encouragement!\n" +
+                    "• bye — exits the app";
+
+    private static final int CLOSE_DELAY_SECONDS = 1;
+
     @FXML
     private ScrollPane scrollPane;
 
@@ -53,21 +74,8 @@ public class MainWindow extends AnchorPane {
         dialogContainer.heightProperty().addListener((obs, oldVal, newVal) ->
                 scrollPane.setVvalue(1.0));
 
-        String welcome = "Hello, furrr-iend! Do you need a helping paw?\n\n" +
-                "Here's what CatBot can do for you:\n" +
-                "• todo <description>\n" +
-                "• deadline <description> /by <yyyy-MM-dd HHmm>\n" +
-                "• event <description> /from <yyyy-MM-dd HHmm> /to <yyyy-MM-dd HHmm>\n" +
-                "• list\n" +
-                "• mark <task number>\n" +
-                "• unmark <task number>\n" +
-                "• delete <task number>\n" +
-                "• find <keyword> or find <yyyy-MM-dd>\n" +
-                "• cheer\n" +
-                "• bye";
-
         dialogContainer.getChildren().add(
-                DialogBox.getCatDialog(welcome, catImage)
+                DialogBox.getCatDialog(WELCOME_MESSAGE, catImage)
         );
     }
 
@@ -95,7 +103,7 @@ public class MainWindow extends AnchorPane {
         if (input.trim().equalsIgnoreCase("bye")) {
             userInput.setDisable(true);
             sendButton.setDisable(true);
-            PauseTransition pause = new PauseTransition(Duration.seconds(1));
+            PauseTransition pause = new PauseTransition(Duration.seconds(CLOSE_DELAY_SECONDS));
             pause.setOnFinished(event -> {
                 Stage stage = (Stage) dialogContainer.getScene().getWindow();
                 stage.close();

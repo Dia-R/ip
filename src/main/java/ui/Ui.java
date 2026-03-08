@@ -36,16 +36,27 @@ public class Ui {
      */
     public void showInstructions() {
         System.out.println("Here's what CatBot can do for you:");
-        System.out.println("• todo <description>");
-        System.out.println("• deadline <description> /by <yyyy-MM-dd HHmm>");
-        System.out.println("• event <description> /from <yyyy-MM-dd HHmm> /to <yyyy-MM-dd HHmm>");
-        System.out.println("• list");
-        System.out.println("• mark <task number>");
-        System.out.println("• unmark <task number>");
-        System.out.println("• delete <task number>");
-        System.out.println("• find <keyword> or find <yyyy-MM-dd>");
-        System.out.println("• cheer");
-        System.out.println("• bye");
+        System.out.println();
+        System.out.println("  ADDING TASKS");
+        System.out.println("• todo <description>                                    — adds a task with no date");
+        System.out.println("• deadline <description> /by <yyyy-MM-dd HHmm>         — adds a task with a due date");
+        System.out.println("• event <description> /from <yyyy-MM-dd HHmm> /to <yyyy-MM-dd HHmm>  — adds a task with a time range");
+        System.out.println();
+        System.out.println("  MANAGING TASKS");
+        System.out.println("• list                      — shows all your tasks");
+        System.out.println("• mark <task number>        — marks a task as done");
+        System.out.println("• unmark <task number>      — marks a task as not done");
+        System.out.println("• delete <task number>      — removes a single task");
+        System.out.println("• clear                     — removes ALL tasks at once");
+        System.out.println("• note <task number> <text> — attaches a note to a task");
+        System.out.println();
+        System.out.println("  SEARCHING");
+        System.out.println("• find <keyword>            — finds tasks matching a keyword");
+        System.out.println("• find <yyyy-MM-dd>         — finds tasks on a specific date");
+        System.out.println();
+        System.out.println("  OTHER");
+        System.out.println("• cheer                     — get some encouragement!");
+        System.out.println("• bye                       — exits the application");
         System.out.println();
     }
 

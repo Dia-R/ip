@@ -18,7 +18,7 @@ javafx {
 dependencies {
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.10.0'
     testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.10.0'
-    String javaFxVersion = '17.0.7'
+    String javaFxVersion = '21.0.2'
 
     implementation group: 'org.openjfx', name: 'javafx-base', version: javaFxVersion, classifier: 'win'
     implementation group: 'org.openjfx', name: 'javafx-base', version: javaFxVersion, classifier: 'mac'
@@ -72,3 +72,4 @@ tasks.named("shadowJar") {
 tasks.named("startScripts") { mustRunAfter("shadowJar") }
 tasks.named("distTar")      { mustRunAfter("shadowJar") }
 tasks.named("distZip")      { mustRunAfter("shadowJar") }
+tasks.named("startShadowScripts") { mustRunAfter("jar") }
