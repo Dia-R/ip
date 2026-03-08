@@ -120,4 +120,10 @@ public class ParserTest {
         Command command = Parser.parse("note 1 bring umbrella");
         assertTrue(command instanceof NoteCommand);
     }
+
+    @Test
+    public void parse_clearCommand_returnsClearCommand() {
+        Command command = Parser.parse("clear");
+        assertTrue(command instanceof ClearCommand);
+    }
 }

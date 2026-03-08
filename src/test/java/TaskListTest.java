@@ -195,4 +195,24 @@ public class TaskListTest {
         taskList.deleteTask(1);
         assertEquals(1, taskList.getTaskCount());
     }
+
+    @Test
+    public void clearAll_nonEmptyList_removesAllTasks() {
+        taskList.addTask(todo1);
+        taskList.addTask(todo2);
+        taskList.addTask(todo3);
+
+        taskList.clearAll();
+
+        assertEquals(0, taskList.getTaskCount());
+        assertTrue(taskList.isEmpty());
+    }
+
+    @Test
+    public void clearAll_emptyList_remainsEmpty() {
+        taskList.clearAll();
+
+        assertEquals(0, taskList.getTaskCount());
+        assertTrue(taskList.isEmpty());
+    }
 }
