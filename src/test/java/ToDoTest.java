@@ -81,4 +81,19 @@ public class ToDoTest {
     public void getUserTask_returnsDescription() {
         assertEquals("buy milk", todo.getUserTask());
     }
+
+    @Test
+    public void setNotes_validNote_storesNote() {
+        todo.setNotes("buy the organic kind");
+        assertTrue(todo.hasNotes());
+        assertEquals("buy the organic kind", todo.getNotes());
+    }
+
+    @Test
+    public void toString_withNote_includesNoteInOutput() {
+        todo.setNotes("buy the organic kind");
+        String result = todo.toString();
+        assertTrue(result.contains("Note:"));
+        assertTrue(result.contains("buy the organic kind"));
+    }
 }

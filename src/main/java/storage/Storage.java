@@ -18,10 +18,11 @@ import java.util.Scanner;
  * Handles persistence of tasks by reading from and writing to a data file.
  *
  * The storage format uses pipe-delimited fields:
- * T | isDone | description
- * D | isDone | description | deadline
- * E | isDone | description | start | end
+ * T | isDone | description [| notes]
+ * D | isDone | description | deadline [| notes]
+ * E | isDone | description | start | end [| notes]
  *
+ * The notes field is optional.
  * Invalid or corrupted lines are skipped with a warning.
  */
 public class Storage {
@@ -35,6 +36,10 @@ public class Storage {
 
     private static final String SEPARATOR = " | ";
     private static final String FIELD_DELIMITER_REGEX = " \\| ";
+
+    private static final int NOTES_INDEX_TODO = 3;
+    private static final int NOTES_INDEX_DEADLINE = 4;
+    private static final int NOTES_INDEX_EVENT = 5;
 
     private final String filePath;
 
@@ -115,7 +120,7 @@ public class Storage {
     /**
      * Saves tasks to the data file for data persistence.
      *
-     * @param tasks the array of tasks to save.
+     * @param tasks     the array of tasks to save.
      * @param taskCount the number of tasks in the array.
      */
     public void save(Task[] tasks, int taskCount) throws StorageException {
@@ -139,31 +144,34 @@ public class Storage {
 
     /**
      * Converts a {@code Task} into the storage file line format.
+     * Notes are appended as an optional trailing field if present.
      *
      * @param task Task to format.
      * @return A single-line representation of the task suitable for saving.
      */
     private String formatTask(Task task) {
         String doneFlag = task.isDone() ? DONE_FLAG : NOT_DONE_FLAG;
+        String notesField = task.hasNotes() ? SEPARATOR + task.getNotes() : "";
 
         return switch (task.getType()) {
-            case Todo -> TYPE_TODO + SEPARATOR + doneFlag + SEPARATOR + task.getUserTask();
+            case Todo -> TYPE_TODO + SEPARATOR + doneFlag + SEPARATOR + task.getUserTask() + notesField;
             case Deadline -> {
                 Deadline deadline = (Deadline) task;
                 yield TYPE_DEADLINE + SEPARATOR + doneFlag + SEPARATOR + deadline.getUserTask()
-                        + SEPARATOR + deadline.getStorageDeadline();
+                        + SEPARATOR + deadline.getStorageDeadline() + notesField;
             }
             case Event -> {
                 Event event = (Event) task;
                 yield TYPE_EVENT + SEPARATOR + doneFlag + SEPARATOR + event.getUserTask()
                         + SEPARATOR + event.getStorageStart()
-                        + SEPARATOR + event.getStorageEnd();
+                        + SEPARATOR + event.getStorageEnd() + notesField;
             }
         };
     }
 
     /**
      * Parses one line from the data file into a {@code Task}.
+     * Restores the note if the optional notes field is present.
      *
      * Returns {@code null} if the line is blank, corrupted, or cannot be parsed.
      */
@@ -187,7 +195,28 @@ public class Storage {
         }
 
         markDoneIfNeeded(task, isDone);
+        restoreNotesIfPresent(task, taskType, parts);
         return task;
+    }
+
+    /**
+     * Restores the notes field from storage if it was saved.
+     * The notes index differs by task type since each has a different number of fields.
+     */
+    private void restoreNotesIfPresent(Task task, String taskType, String[] parts) {
+        int notesIndex = switch (taskType) {
+            case TYPE_TODO -> NOTES_INDEX_TODO;
+            case TYPE_DEADLINE -> NOTES_INDEX_DEADLINE;
+            case TYPE_EVENT -> NOTES_INDEX_EVENT;
+            default -> -1;
+        };
+
+        if (notesIndex > 0 && parts.length > notesIndex) {
+            String notes = parts[notesIndex].trim();
+            if (!notes.isEmpty()) {
+                task.setNotes(notes);
+            }
+        }
     }
 
     /**

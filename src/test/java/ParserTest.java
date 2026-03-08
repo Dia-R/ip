@@ -114,4 +114,10 @@ public class ParserTest {
         Command command3 = Parser.parse("ToDo buy milk");
         assertTrue(command3 instanceof AddCommand);
     }
+
+    @Test
+    public void parse_noteCommand_returnsNoteCommand() {
+        Command command = Parser.parse("note 1 bring umbrella");
+        assertTrue(command instanceof NoteCommand);
+    }
 }

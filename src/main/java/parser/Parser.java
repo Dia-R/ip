@@ -8,6 +8,7 @@ import commands.ExitCommand;
 import commands.FindCommand;
 import commands.ListCommand;
 import commands.MarkCommand;
+import commands.NoteCommand;
 import commands.UnmarkCommand;
 
 /**
@@ -48,6 +49,8 @@ public class Parser {
             return new DeleteCommand(args);
         case "find":
             return new FindCommand(args);
+        case "note":
+            return new NoteCommand(args);
         case "cheer":
             return new CheerCommand();
         default:
